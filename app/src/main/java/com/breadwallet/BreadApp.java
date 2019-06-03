@@ -109,6 +109,7 @@ public class BreadApp extends Application implements ApplicationLifecycleObserve
     public void onCreate() {
         super.onCreate();
 
+        Log.d(TAG,"onCreate");
         mInstance = this;
 
         final Fabric fabric = new Fabric.Builder(this)
