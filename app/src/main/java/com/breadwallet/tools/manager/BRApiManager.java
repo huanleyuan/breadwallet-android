@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +40,11 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * BreadWallet
@@ -212,7 +217,9 @@ public final class BRApiManager implements ApplicationLifecycleObserver.Applicat
      */
     private synchronized void fetchCryptoRates(Context context, String codeListChunk) {
         String url = TOKEN_RATES_URL_PREFIX + codeListChunk + TOKEN_RATES_URL_SUFFIX;
+        Log.e(TAG, "fetchCryptoRates url:"+url);
         String result = urlGET(context, url);
+        Log.e(TAG, "fetchCryptoRates result:"+result);
         try {
             if (Utils.isNullOrEmpty(result)) {
                 Log.e(TAG, "fetchCryptoRates: Failed to fetch");
@@ -360,8 +367,33 @@ public final class BRApiManager implements ApplicationLifecycleObserver.Applicat
                 .header(BRConstants.HEADER_ACCEPT, BRConstants.CONTENT_TYPE_JSON_CHARSET_UTF8)
                 .get();
 
-        Request request = builder.build();
         String bodyText = null;
+        Log.i(TAG, "urlGET a "+myURL);
+
+        final OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(myURL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, "urlGET b "+e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                String responseBody = response.body().toString();
+
+                try{
+                    String json = response.body().string();
+                    Log.e(TAG, "responseBody:"+json);
+                }catch (Exception e){
+
+                }
+
+            }
+        });
+        request = builder.build();
         APIClient.BRResponse resp = APIClient.getInstance(app).sendRequest(request, false);
 
         try {
@@ -379,6 +411,11 @@ public final class BRApiManager implements ApplicationLifecycleObserver.Applicat
             Log.e(TAG, "urlGET: ", e);
         }
         return bodyText;
+
+
+
+
+
     }
 
     @Override
