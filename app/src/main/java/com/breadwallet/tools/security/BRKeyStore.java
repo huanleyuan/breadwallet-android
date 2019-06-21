@@ -100,7 +100,8 @@ public final class BRKeyStore {
     private static final String TAG = BRKeyStore.class.getName();
 
     private static final String KEY_STORE_PREFS_NAME = "keyStorePrefs";
-    private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    private static final String ANDROID_KEY_STORE = "AndroidKeyStore";//换名字会异常
+    //private static final String BREAD_KEY_STORE = "bread-key-store";
     private static final String MANUFACTURER_GOOGLE = "Google";
 
     // Old encryption parameters
@@ -207,7 +208,7 @@ public final class BRKeyStore {
             KeyStore keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
             keyStore.load(null);
             Key key = keyStore.getKey(PHRASE_ALIAS, null);
-
+            Log.d("chendy","getValidityStatus");
             // If there is no key, then it has not been initialized yet. The key store is still considered valid.
             if (key != null) {
                 Cipher cipher = Cipher.getInstance(NEW_CIPHER_ALGORITHM);
@@ -261,7 +262,7 @@ public final class BRKeyStore {
                                                 int requestCode, boolean authRequired) throws UserNotAuthenticatedException {
         // Validates if the parameters combination parameters are valid (deprecated)
         validateSet(data, alias, aliasFile, aliasIv, authRequired);
-
+        Log.d(TAG,"setData "+alias+" "+aliasFile+" "+aliasIv+" "+requestCode);
         KeyStore keyStore;
         try {
             LOCK.lock();
@@ -306,7 +307,7 @@ public final class BRKeyStore {
             if (iv == null) {
                 throw new NullPointerException("iv is null!");
             }
-
+            Log.d("chendy","setData ");
             // Store the iv in SharedPreferences to use for decryption.
             storeEncryptedData(context, iv, aliasIv);
             // Encrypt data.
@@ -367,6 +368,7 @@ public final class BRKeyStore {
      */
     private static byte[] getData(final Context context, String alias, String aliasFile, String aliasIv, int requestCode)
             throws UserNotAuthenticatedException {
+        Log.d("chendy","getData "+alias+" /"+aliasFile+" /"+aliasIv);
         // validate entries
         validateGet(alias, aliasFile, aliasIv);
         KeyStore keyStore;
@@ -394,9 +396,11 @@ public final class BRKeyStore {
 
                 outCipher = Cipher.getInstance(NEW_CIPHER_ALGORITHM);
                 outCipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(GMC_TAG_LENGTH, iv));
+                Log.d("chendy","outCipher ");
                 try {
                     byte[] decryptedData = outCipher.doFinal(encryptedData);
                     if (decryptedData != null) {
+                        Log.d("chendy","return byte");
                         return decryptedData;
                     }
                 } catch (IllegalBlockSizeException | BadPaddingException e) {
@@ -409,6 +413,7 @@ public final class BRKeyStore {
             String encryptedDataFilePath = getFilePath(aliasFile, context);
 
             if (secretKey == null) {
+                Log.d("chendy","getData No such key "+encryptedDataFilePath);
                 // No such key.
                 boolean fileExists = new File(encryptedDataFilePath).exists();
                 if (!fileExists) {
@@ -423,6 +428,7 @@ public final class BRKeyStore {
 
             boolean ivExists = new File(getFilePath(aliasIv, context)).exists();
             boolean aliasExists = new File(getFilePath(aliasFile, context)).exists();
+            Log.d("chendy","getData ivExists："+ivExists+" aliasExists:"+aliasExists);
             // Cannot happen, either both or neither.
             if (!ivExists || !aliasExists) {
                 removeAliasAndDatas(keyStore, alias, context);
@@ -453,6 +459,7 @@ public final class BRKeyStore {
 
             // Create the new format key.
             SecretKey newKey = createKeys(alias, (alias.equals(PHRASE_ALIAS)));
+            Log.d("chendy","getData Create the new format key");
             if (newKey == null) {
                 throw new RuntimeException("Failed to create new key for mAlias " + alias);
             }
@@ -460,12 +467,14 @@ public final class BRKeyStore {
             // Initialize the cipher.
             inCipher.init(Cipher.ENCRYPT_MODE, newKey);
             iv = inCipher.getIV();
+            Log.d("chendy","getData before storeEncryptedData ");
             // Store the new iv.
             storeEncryptedData(context, iv, aliasIv);
             // Encrypt the data.
             encryptedData = inCipher.doFinal(result);
             // Store the new data.
             storeEncryptedData(context, encryptedData, alias);
+            Log.d("chendy","getData end byte[]");
             return result;
         } catch (UserNotAuthenticatedException e) {
             // User not authenticated, ask the system for authentication.
@@ -533,17 +542,20 @@ public final class BRKeyStore {
     }
 
     public static byte[] getPhrase(final Context context, int requestCode) throws UserNotAuthenticatedException {
+        Log.d("chendy","getPhrase requestCode："+requestCode);
         if (PostAuth.mAuthLoopBugHappened) {
             showLoopBugMessage(context);
             throw new UserNotAuthenticatedException();
         }
         AliasObject obj = ALIAS_OBJECT_MAP.get(PHRASE_ALIAS);
-        return getData(context, obj.mAlias, obj.mDatafileName, obj.mIvFileName, requestCode);
+        byte[] result=getData(context, obj.mAlias, obj.mDatafileName, obj.mIvFileName, requestCode);
+        return result;
     }
 
     public static boolean putMasterPublicKey(byte[] masterPubKey, Context context) {
         AliasObject obj = ALIAS_OBJECT_MAP.get(PUB_KEY_ALIAS);
         try {
+            Log.d("chendy","putMasterPublicKey保存主私钥");
             return masterPubKey != null && masterPubKey.length != 0
                     && setData(context, masterPubKey, obj.mAlias, obj.mDatafileName, obj.mIvFileName, 0, false);
         } catch (UserNotAuthenticatedException e) {
@@ -555,6 +567,7 @@ public final class BRKeyStore {
     public static byte[] getMasterPublicKey(final Context context) {
         AliasObject obj = ALIAS_OBJECT_MAP.get(PUB_KEY_ALIAS);
         try {
+            Log.d(TAG,"getMasterPublicKey 获取主公钥 obj:"+obj.toString());
             return getData(context, obj.mAlias, obj.mDatafileName, obj.mIvFileName, 0);
         } catch (UserNotAuthenticatedException e) {
             e.printStackTrace();
@@ -667,6 +680,7 @@ public final class BRKeyStore {
         AliasObject obj = ALIAS_OBJECT_MAP.get(PASS_CODE_ALIAS);
         byte[] bytesToStore = pinCode.getBytes();
         try {
+            Log.d(TAG,"putPinCode "+pinCode);
             return setData(context, bytesToStore, obj.mAlias, obj.mDatafileName, obj.mIvFileName, 0, false);
         } catch (UserNotAuthenticatedException e) {
             e.printStackTrace();
@@ -870,6 +884,7 @@ public final class BRKeyStore {
         String base64 = Base64.encodeToString(data, Base64.DEFAULT);
         SharedPreferences.Editor edit = pref.edit();
         edit.putString(name, base64);
+        Log.d("chendy","storeEncryptedData 保存加密信息 "+name+" base64:"+base64);
         edit.apply();
     }
 
@@ -883,6 +898,7 @@ public final class BRKeyStore {
     public static byte[] retrieveEncryptedData(Context ctx, String name) {
         SharedPreferences pref = ctx.getSharedPreferences(KEY_STORE_PREFS_NAME, Context.MODE_PRIVATE);
         String base64 = pref.getString(name, null);
+        Log.d("chendy","retrieveEncryptedData 存在了SharedPreferences里 "+name+" base64："+base64);
         return base64 == null ? null : Base64.decode(base64, Base64.DEFAULT);
     }
 
@@ -1008,5 +1024,13 @@ public final class BRKeyStore {
             return mIvFileName;
         }
 
+        @Override
+        public String toString() {
+            return "AliasObject{" +
+                    "mAlias='" + mAlias + '\'' +
+                    ", mDatafileName='" + mDatafileName + '\'' +
+                    ", mIvFileName='" + mIvFileName + '\'' +
+                    '}';
+        }
     }
 }

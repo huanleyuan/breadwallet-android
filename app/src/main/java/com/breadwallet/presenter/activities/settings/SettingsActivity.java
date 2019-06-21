@@ -45,9 +45,10 @@ public class SettingsActivity extends BaseSettingsActivity {
         ListView settingsList = findViewById(R.id.settings_list);
         List<BRSettingsItem> settingsItems = new ArrayList<>();
         String mode = getIntent().getStringExtra(EXTRA_MODE);
-        if (mode == null) {
+     /*   if (mode == null) {
             throw new IllegalArgumentException("Need mode for the settings activity");
-        }
+        }*/
+        mode=MODE_SETTINGS;
         switch (mode) {
             case MODE_SETTINGS:
                 settingsItems = SettingsUtil.getMainSettings(this);

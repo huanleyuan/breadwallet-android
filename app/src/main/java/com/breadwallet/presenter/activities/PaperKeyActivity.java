@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -65,6 +66,7 @@ public class PaperKeyActivity extends BRActivity {
 
             @Override
             public void onPageSelected(int position) {
+                Log.d("chendy","onPageSelected "+position);
                 updateItemIndexText();
                 if (position == 0) {
                     setButtonEnabled(false);
@@ -91,6 +93,7 @@ public class PaperKeyActivity extends BRActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("chendy","点击下一个 ");
                 updateWordView(true);
             }
         });
@@ -107,6 +110,7 @@ public class PaperKeyActivity extends BRActivity {
         mPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("chendy","点击前一个 ");
                 updateWordView(false);
 
             }
@@ -114,7 +118,7 @@ public class PaperKeyActivity extends BRActivity {
 
         String cleanPhrase = getIntent().getExtras() == null ? null : getIntent().getStringExtra(EXTRA_PAPER_KEY);
         mWordMap = new SparseArray<>();
-
+        Log.d("chendy","PaperKeyActivity onCreate cleanPhrase "+cleanPhrase);
         if (Utils.isNullOrEmpty(cleanPhrase)) {
             throw new IllegalArgumentException(TAG + ": cleanPhrase is null");
         }
@@ -181,6 +185,7 @@ public class PaperKeyActivity extends BRActivity {
 
     private void updateWordView(boolean isNext) {
         int currentIndex = mWordViewPager.getCurrentItem();
+        Log.d("chendy","updateWordView "+isNext+" currentIndex:"+currentIndex+" /"+WORD_COUNT);
         if (isNext) {
             setButtonEnabled(true);
             //Last word index is 11.
@@ -188,6 +193,7 @@ public class PaperKeyActivity extends BRActivity {
                 String extraDoneAction = getIntent().getExtras() == null
                         ? null
                         : getIntent().getStringExtra(PaperKeyProveActivity.EXTRA_DONE_ACTION);
+                Log.d("chendy","extraDoneAction "+extraDoneAction);
                 PostAuth.getInstance().onPhraseProveAuth(this, false, extraDoneAction);
             } else {
                 mWordViewPager.setCurrentItem(currentIndex + 1);
@@ -212,6 +218,7 @@ public class PaperKeyActivity extends BRActivity {
     private void updateItemIndexText() {
         String text = String.format(Locale.getDefault(), getString(R.string.WritePaperPhrase_step),
                 mWordViewPager.getCurrentItem() + 1, mWordMap.size());
+        Log.d("chendy","updateItemIndexText "+text);
         mItemIndexTextView.setText(text);
     }
 

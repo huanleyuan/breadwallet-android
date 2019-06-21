@@ -121,6 +121,7 @@ public final class AppEntryPointHandler {
      */
     public static void processDeepLink(final Context context, String url) {
         if (url != null && !url.isEmpty()) {
+            Log.i(TAG, "processDeepLink "+url);
             if (!WalletsMaster.getInstance().isBrdWalletCreated(context)) {
                 // Go to intro screen if the wallet is not create yet.
                 Intent introIntent = new Intent(context, IntroActivity.class);

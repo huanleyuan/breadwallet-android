@@ -34,6 +34,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -99,6 +100,7 @@ public class OnBoardingActivity extends BRActivity {
         mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG,"点击跳过");
                 mSkipButton.setEnabled(false);
                 EventUtils.pushEvent(EventUtils.EVENT_SKIP_BUTTON);
                 progressToBrowse(OnBoardingActivity.this);
@@ -201,7 +203,9 @@ public class OnBoardingActivity extends BRActivity {
     // TODO Create an interface in FragmentOnBoarding to call this method without it being static.
     public static void progressToBrowse(Activity activity) {
         EventUtils.pushEvent(EventUtils.EVENT_FINAL_PAGE_BROWSE_FIRST);
-        if (BRKeyStore.getPinCode(activity).length() > 0) {
+        String pinCode=BRKeyStore.getPinCode(activity);
+        Log.d(TAG,"点击跳过后 progressToBrowse "+pinCode);
+        if (pinCode.length() > 0) {
             UiUtils.startBreadActivity(activity, true);
         } else {
             OnBoardingActivity.setNextScreen(OnBoardingActivity.NextScreen.HOME_SCREEN);
@@ -230,6 +234,7 @@ public class OnBoardingActivity extends BRActivity {
     }
 
     public static void setNextScreen(NextScreen nextScreen) {
+        Log.d(TAG,"setNextScreen ");
         mNextScreen = nextScreen;
     }
 

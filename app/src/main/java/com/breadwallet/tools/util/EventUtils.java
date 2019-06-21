@@ -148,7 +148,7 @@ public final class EventUtils {
     }
 
     public static synchronized void pushEvent(String eventName, Map<String, String> attributes) {
-        Log.d(TAG, "pushEvent: " + eventName + ", attr: " + attributes);
+        //Log.d(TAG, "pushEvent: " + eventName + ", attr: " + attributes);
         Event event = new Event(System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS, eventName, attributes);
         mEvents.add(event);
     }

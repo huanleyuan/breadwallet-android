@@ -9,6 +9,7 @@ import android.support.transition.TransitionManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
@@ -191,9 +192,11 @@ public class PaperKeyProveActivity extends BRActivity {
     private boolean isWordCorrect(boolean first) {
         if (first) {
             String edit = Bip39Reader.cleanWord(mWordEditTextFirst.getText().toString());
+            Log.d("chendy","isWordCorrect first "+edit);
             return SmartValidator.isWordValid(PaperKeyProveActivity.this, edit) && edit.equalsIgnoreCase(mWordsSparseArray.get(mWordsSparseArray.keyAt(0)));
         } else {
             String edit = Bip39Reader.cleanWord(mWordEditTextSecond.getText().toString());
+            Log.d("chendy","isWordCorrect second "+edit);
             return SmartValidator.isWordValid(PaperKeyProveActivity.this, edit) && edit.equalsIgnoreCase(mWordsSparseArray.get(mWordsSparseArray.keyAt(1)));
         }
     }

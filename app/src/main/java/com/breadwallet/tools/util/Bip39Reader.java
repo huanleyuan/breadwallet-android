@@ -59,6 +59,7 @@ public class Bip39Reader {
         JA("ja"),
         KO("ko"),
         ZH_HANS("zh-Hans"),
+        //ZH_HANS("zh"),
         ZH_HANT("zh-Hant");
 
         private final String mLanguage;
@@ -73,11 +74,12 @@ public class Bip39Reader {
 
         public static SupportedLanguage getSupportedLanguage(String targetLanguage) {
             for (SupportedLanguage supportedLanguage : SupportedLanguage.values()) {
+                Log.i(TAG, "getSupportedLanguage: "+supportedLanguage.toString());
                 if (supportedLanguage.toString().equals(targetLanguage)) {
+                    Log.i(TAG, "getSupportedLanguage targetLanguage: "+targetLanguage);
                     return supportedLanguage;
                 }
             }
-
             // If the target language is not supported, use the default.
             return SupportedLanguage.EN;
         }
@@ -91,11 +93,12 @@ public class Bip39Reader {
             // Return all words for all languages.
             return getAllBip39Words(context);
         }
-
+        Log.i(TAG, "getBip39Words: ");
         return getBip39WordsByLanguage(context, SupportedLanguage.getSupportedLanguage(targetLanguage));
     }
 
     static List<String> getAllBip39Words(Context context) {
+        Log.i(TAG, "getAllBip39Words: ");
         List<String> words = new ArrayList<>();
         for (SupportedLanguage supportedLanguage : SupportedLanguage.values()) {
             words.addAll(getBip39WordsByLanguage(context, supportedLanguage));
@@ -107,6 +110,7 @@ public class Bip39Reader {
         String fileName = FILE_PREFIX + language.toString() + FILE_SUFFIX;
         List<String> wordList = new ArrayList<>();
         BufferedReader reader = null;
+        Log.i(TAG, "getBip39WordsByLanguage: ");
         try {
             AssetManager assetManager = context.getResources().getAssets();
             InputStream inputStream = assetManager.open(fileName);
@@ -139,7 +143,7 @@ public class Bip39Reader {
         }
         String cleanPaperKey = SmartValidator.cleanPaperKey(context, paperKey);
         String firstWord = cleanPaperKey.split(" ")[0];
-
+        Log.i(TAG, "detectWords: ");
         for (SupportedLanguage supportedLanguage : SupportedLanguage.values()) {
             List<String> words = getBip39WordsByLanguage(context, supportedLanguage);
             if (words.contains(firstWord)) {
@@ -150,7 +154,9 @@ public class Bip39Reader {
     }
 
     public static String cleanWord(String word) {
-        return Normalizer.normalize(word.trim().replace(UTF8_BOM, "").replace("　", "")
+        String result=Normalizer.normalize(word.trim().replace(UTF8_BOM, "").replace("　", "")
                 .replace(" ", ""), Normalizer.Form.NFKD);
+        //Log.i(TAG, "所有单词cleanWord: "+word+" //"+result);
+        return result;
     }
 }

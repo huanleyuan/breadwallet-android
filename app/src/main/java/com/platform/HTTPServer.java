@@ -112,7 +112,9 @@ public class HTTPServer extends AbstractLifeCycle {
      * @return The url where the endpoint is hosted.
      */
     public static String getPlatformUrl(String endpoint) {
-        return getPlatformBaseUrl() + endpoint;
+        String url=getPlatformBaseUrl() + endpoint;
+        Log.d(TAG,"getPlatformUrl "+url);
+        return url;
     }
 
     private void init(int port) {
@@ -148,6 +150,7 @@ public class HTTPServer extends AbstractLifeCycle {
      * @param context Application context.
      */
     public void startServer(Context context) {
+        Log.d(TAG,"startServer ");
         mContext = context;
         try {
             mInstance.start();

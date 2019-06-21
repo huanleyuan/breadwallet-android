@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.breadwallet.R;
+import com.breadwallet.chendy.PhraseUtils;
 import com.breadwallet.model.Wallet;
 import com.breadwallet.presenter.activities.settings.SettingsActivity;
 import com.breadwallet.presenter.activities.util.BRActivity;
@@ -92,7 +93,11 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Log.i(TAG, "onCreate");
 
+        //test
+        //boolean success = PhraseUtils.generateRandomSeed(this);
+        //
         mWalletRecycler = findViewById(R.id.rv_wallet_list);
         mFiatTotal = findViewById(R.id.total_assets_usd);
         mNotificationBar = findViewById(R.id.notification_bar);
@@ -102,13 +107,20 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
         mListGroupLayout = findViewById(R.id.list_group_layout);
 
         mBuyLayout.setOnClickListener(view -> {
+
             String url = String.format(BRConstants.CURRENCY_PARAMETER_STRING_FORMAT,
                     HTTPServer.getPlatformUrl(HTTPServer.URL_BUY),
                     WalletBitcoinManager.getInstance(HomeActivity.this).getCurrencyCode());
+            Log.i(TAG, "点击购买到wap "+url);
             UiUtils.startWebActivity(HomeActivity.this, url);
         });
-        mTradeLayout.setOnClickListener(view -> UiUtils.startWebActivity(HomeActivity.this, HTTPServer.getPlatformUrl(HTTPServer.URL_TRADE)));
+        mTradeLayout.setOnClickListener(view -> {
+            Log.i(TAG, "点击换到wap "+HTTPServer.getPlatformUrl(HTTPServer.URL_TRADE));
+            UiUtils.startWebActivity(HomeActivity.this, HTTPServer.getPlatformUrl(HTTPServer.URL_TRADE));
+        });
+
         mMenuLayout.setOnClickListener(view -> {
+            Log.i(TAG, "点击菜单到设置页 ");
             Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
             intent.putExtra(SettingsActivity.EXTRA_MODE, SettingsActivity.MODE_SETTINGS);
             startActivity(intent);
@@ -179,8 +191,10 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
 
     private synchronized void processIntentData(Intent intent) {
         String data = intent.getStringExtra(EXTRA_DATA);
+        Log.i(TAG, "processIntentData "+data);
         if (Utils.isNullOrEmpty(data)) {
             data = intent.getDataString();
+            Log.i(TAG, "processIntentData b "+data);
         }
         if (data != null) {
             AppEntryPointHandler.processDeepLink(this, data);

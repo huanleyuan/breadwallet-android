@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class PinFragment extends Fragment implements PinLayout.OnPinInserted {
         View rootView = inflater.inflate(R.layout.fragment_pin, container, false);
         mKeyboard = rootView.findViewById(R.id.brkeyboard);
         mKeyboard.setDeleteImage(R.drawable.ic_delete_gray);
-
+        Log.d("chendy","PinFragment onCreate 输入pin code到下级页面");
         mTitle = rootView.findViewById(R.id.title);
         mMessage = rootView.findViewById(R.id.message);
         mDialogLayout = rootView.findViewById(R.id.pin_dialog);
@@ -128,7 +129,7 @@ public class PinFragment extends Fragment implements PinLayout.OnPinInserted {
         mAuthSucceeded = true;
         mCompletion.onComplete();
         Activity activity = getActivity();
-
+        Log.d("chendy","PinFragment handleSuccess ");
         if (activity != null && !activity.isDestroyed()) {
             activity.getFragmentManager().popBackStack();
         }
@@ -165,6 +166,7 @@ public class PinFragment extends Fragment implements PinLayout.OnPinInserted {
 
     @Override
     public void onPinInserted(String pin, boolean isPinCorrect) {
+        Log.d("chendy","PinFragment onPinInserted "+pin+" "+isPinCorrect);
         if (isPinCorrect) {
             handleSuccess();
         }

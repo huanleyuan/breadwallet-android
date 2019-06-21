@@ -54,7 +54,9 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
         mUnlockedImage = findViewById(R.id.unlocked_image);
 
         String pin = BRKeyStore.getPinCode(this);
+        Log.d(TAG, "onCreate 锁屏密码pin："+pin);
         if (pin.isEmpty()) {
+            Log.d(TAG, "onCreate 锁屏密码pin isEmpty");
             Intent intent = new Intent(LoginActivity.this, InputPinActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
@@ -62,6 +64,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
             return;
         }
         if (!PinLayout.isPinLengthValid(pin.length())) {
+            Log.d(TAG, "onCreate 锁屏密码pin isPinLengthValid");
             throw new IllegalArgumentException("Pin length illegal: " + pin.length());
         }
 
@@ -75,6 +78,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
         BRExecutor.getInstance().forLightWeightBackgroundTasks().execute(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "onCreate run");
                 WalletsMaster.getInstance().getAllWallets(LoginActivity.this);
             }
         });
@@ -86,16 +90,18 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
             mFingerPrint.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.i(TAG, "onClick");
                     AuthManager.getInstance().authPrompt(LoginActivity.this,
                             "", "", false, true, new BRAuthCompletion() {
                                 @Override
                                 public void onComplete() {
+                                    Log.i(TAG, "onComplete");
                                     unlockWallet();
                                 }
 
                                 @Override
                                 public void onCancel() {
-
+                                    Log.i(TAG, "onCancel");
                                 }
                             });
                 }
@@ -105,6 +111,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "Handler run");
                 if (mFingerPrint != null && useFingerprint) {
                     mFingerPrint.performClick();
                 }
@@ -122,6 +129,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
         BRExecutor.getInstance().forBackgroundTasks().execute(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "BRExecutor run");
                 Thread.currentThread().setName("BG:" + TAG + ":initLastWallet");
                 WalletsMaster.getInstance().initLastWallet(LoginActivity.this);
             }
@@ -159,6 +167,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
                         boolean showHomeActivity = (BRSharedPrefs.wasAppBackgroundedFromHome(LoginActivity.this))
                                 || BRSharedPrefs.isNewWallet(LoginActivity.this);
                         String currencyCode = BRSharedPrefs.getCurrentWalletCurrencyCode(LoginActivity.this);
+                        Log.i(TAG, "unlockWallet run "+showHomeActivity+" "+currencyCode);
                         // Temporary fix for DROID-1231, refactor the Activity organization later.
                         if (showHomeActivity) {
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
@@ -188,7 +197,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.i(TAG, "onActivityResult");
         if (requestCode == InputPinActivity.SET_PIN_REQUEST_CODE && resultCode == RESULT_OK) {
 
             boolean isPinAccepted = data.getBooleanExtra(InputPinActivity.EXTRA_PIN_ACCEPTED, false);
@@ -221,6 +230,7 @@ public class LoginActivity extends BRActivity implements PinLayout.OnPinInserted
 
     @Override
     public void onPinInserted(String pin, boolean isPinCorrect) {
+        Log.i(TAG, "onPinInserted "+pin+" "+isPinCorrect);
         if (isPinCorrect) {
             unlockWallet();
         } else {

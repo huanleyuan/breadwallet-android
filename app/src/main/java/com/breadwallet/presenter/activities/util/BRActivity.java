@@ -124,6 +124,7 @@ public class BRActivity extends FragmentActivity {
     @Override
         protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         // 123 is the qrCode result
+        Log.i(TAG, "onActivityResult");
         switch (requestCode) {
             case BRConstants.PAY_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
@@ -199,6 +200,7 @@ public class BRActivity extends FragmentActivity {
     }
 
     public void init() {
+        Log.d(TAG, "init");
         //set status bar color
         InternetManager.getInstance();
         if (WalletsMaster.isBrdWalletCreated(this)) {

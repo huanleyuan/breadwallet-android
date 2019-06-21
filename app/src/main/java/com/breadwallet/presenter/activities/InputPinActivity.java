@@ -2,6 +2,7 @@ package com.breadwallet.presenter.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -17,7 +18,9 @@ import com.breadwallet.tools.util.BRConstants;
 import com.breadwallet.wallet.WalletsMaster;
 import com.breadwallet.wallet.abstracts.BaseWalletManager;
 
-
+/**
+ * 输入pin码的页面
+ */
 public class InputPinActivity extends BRActivity implements PinLayout.OnPinInserted {
     private static final String TAG = InputPinActivity.class.getName();
 
@@ -45,6 +48,7 @@ public class InputPinActivity extends BRActivity implements PinLayout.OnPinInser
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_template);
 
+
         mKeyboard = findViewById(R.id.brkeyboard);
 
         mTitle = findViewById(R.id.title);
@@ -61,7 +65,9 @@ public class InputPinActivity extends BRActivity implements PinLayout.OnPinInser
             }
         });
         int pinLength = BRKeyStore.getPinCode(this).length();
+
         mPinUpdateMode = getIntent().getBooleanExtra(EXTRA_PIN_MODE_UPDATE, false);
+        Log.d(TAG,"onCreate "+pinLength+" //"+mPinUpdateMode);
         if (pinLength > 0) {
             mPinMode = PinMode.VERIFY;
         } else {
@@ -93,6 +99,7 @@ public class InputPinActivity extends BRActivity implements PinLayout.OnPinInser
 
     @Override
     public void onPinInserted(String pin, boolean isPinCorrect) {
+        Log.d(TAG,"输入pin code 完毕 onPinInserted "+pin+" "+isPinCorrect+" "+mPinMode);
         switch (mPinMode) {
             case VERIFY:
                 if (isPinCorrect) {
@@ -110,6 +117,7 @@ public class InputPinActivity extends BRActivity implements PinLayout.OnPinInser
                 break;
 
             case CONFIRM:
+                Log.d(TAG,"CONFIRM "+mNewPin+" "+pin);
                 if (pin.equals(mNewPin)) {
                     mPinDigitViews.setIsPinUpdating(false);
                     BRKeyStore.putPinCode(pin, this);

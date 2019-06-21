@@ -120,17 +120,20 @@ public class PostAuth {
      */
 
     public void onPhraseCheckAuth(Activity activity, boolean authAsked, String intentExtra) {
+        Log.d("chendy","onPhraseCheckAuth "+authAsked+" /"+intentExtra);
         if (intentExtra != null) {
             mOnDoneAction = intentExtra;
         }
         String cleanPhrase;
         try {
+            Log.d("chendy","onPhraseCheckAuth 开始生成助记词");
             byte[] raw = BRKeyStore.getPhrase(activity, BRConstants.SHOW_PHRASE_REQUEST_CODE);
             if (raw == null) {
                 BRReportsManager.reportBug(new NullPointerException("onPhraseCheckAuth: getPhrase = null"), true);
                 return;
             }
             cleanPhrase = new String(raw);
+            Log.d("chendy","onPhraseCheckAuth 结束生成助记词 "+cleanPhrase);
         } catch (UserNotAuthenticatedException e) {
             if (authAsked) {
                 Log.e(TAG, "onPhraseCheckAuth: WARNING!!!! LOOP");
@@ -139,6 +142,7 @@ public class PostAuth {
             return;
         }
         Intent intent = new Intent(activity, PaperKeyActivity.class);
+        Log.d("chendy","onPhraseCheckAuth 到下级页面传过去 助记词"+cleanPhrase);
         intent.putExtra(PaperKeyActivity.EXTRA_PAPER_KEY, cleanPhrase);
         if (!Utils.isNullOrEmpty(mOnDoneAction)) {
             intent.putExtra(PaperKeyProveActivity.EXTRA_DONE_ACTION, mOnDoneAction);
@@ -170,6 +174,7 @@ public class PostAuth {
             return;
         }
         Intent intent = new Intent(activity, PaperKeyProveActivity.class);
+        Log.d("chendy","onPhraseProveAuth【【【【 到下级页面传过去 助记词"+cleanPhrase);
         intent.putExtra(PaperKeyProveActivity.EXTRA_PAPER_KEY, cleanPhrase);
         if (!Utils.isNullOrEmpty(mOnDoneAction)) {
             intent.putExtra(PaperKeyProveActivity.EXTRA_DONE_ACTION, mOnDoneAction);

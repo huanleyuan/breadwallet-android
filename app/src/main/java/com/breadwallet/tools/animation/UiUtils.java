@@ -305,6 +305,7 @@ public class UiUtils {
     }
 
     public static boolean isClickAllowed() {
+        Log.d("chendy","isClickAllowed 避免点击太频繁");
         boolean allow = false;
         if (System.currentTimeMillis() - mLastClickTime > CLICK_PERIOD_ALLOWANCE) {
             allow = true;
@@ -320,6 +321,7 @@ public class UiUtils {
     }
 
     public static void startBreadActivity(Activity from, boolean auth) {
+        Log.d(TAG,"startBreadActivity "+auth);
         if (from == null) {
             return;
         }

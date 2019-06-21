@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -141,6 +142,7 @@ public final class PromptManager {
                 hidePrompt(context, baseLayout);
             }
         });
+        Log.d("chendy","promptItem:"+promptItem);
         switch (promptItem) {
             case FINGER_PRINT:
                 title.setText(context.getString(R.string.Prompts_TouchId_title_android));
@@ -148,6 +150,7 @@ public final class PromptManager {
                 continueButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d("chendy","点击继续a");
                         Intent intent = new Intent(context, FingerprintActivity.class);
                         context.startActivity(intent);
                         context.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
@@ -161,6 +164,7 @@ public final class PromptManager {
                 continueButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d("chendy","点击继续 b "+ WriteDownActivity.ViewReason.SETTINGS.getValue());
                         Intent intent = new Intent(context, WriteDownActivity.class);
                         intent.putExtra(WriteDownActivity.EXTRA_VIEW_REASON, WriteDownActivity.ViewReason.SETTINGS.getValue());
                         context.startActivity(intent);
@@ -175,6 +179,7 @@ public final class PromptManager {
                 continueButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d("chendy","点击继续 c");
                         Intent intent = new Intent(context, InputPinActivity.class);
                         intent.putExtra(InputPinActivity.EXTRA_PIN_MODE_UPDATE, true);
                         context.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
@@ -189,6 +194,7 @@ public final class PromptManager {
                 continueButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d("chendy","点击继续 d");
                         BRExecutor.getInstance().forLightWeightBackgroundTasks().execute(new Runnable() {
                             @Override
                             public void run() {
@@ -217,6 +223,7 @@ public final class PromptManager {
                 closeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d("chendy","点击撤销 a");
                         hidePrompt(context, customLayout);
                         BRSharedPrefs.putEmailOptInDismissed(context, true);
                     }
@@ -225,6 +232,7 @@ public final class PromptManager {
                     @Override
                     public void onClick(View view) {
                         final String email = emailEditText.getText().toString().trim();
+                        Log.d("chendy","提交 "+email);
                         if (isEmailValid(email)) {
                             UserMetricsUtil.makeEmailOptInRequest(context, email);
                             promptIcon.setImageResource(R.drawable.ic_yay);

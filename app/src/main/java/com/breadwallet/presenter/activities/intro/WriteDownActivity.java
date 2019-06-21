@@ -1,6 +1,7 @@
 package com.breadwallet.presenter.activities.intro;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -111,12 +112,13 @@ public class WriteDownActivity extends BRActivity {
                                 String extraDoneAction = getIntent().getExtras() == null
                                         ? null
                                         : getIntent().getStringExtra(PaperKeyProveActivity.EXTRA_DONE_ACTION);
+                                Log.d("chendy","写下纸键 onComplete "+extraDoneAction);
                                 PostAuth.getInstance().onPhraseCheckAuth(WriteDownActivity.this, false, extraDoneAction);
                             }
 
                             @Override
                             public void onCancel() {
-
+                                Log.d("chendy","写下纸键 onCancel ");
                             }
                         });
             }

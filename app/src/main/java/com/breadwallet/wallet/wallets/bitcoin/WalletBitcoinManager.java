@@ -58,6 +58,7 @@ public final class WalletBitcoinManager extends BaseBitcoinWalletManager {
     private static WalletBitcoinManager mInstance;
 
     public static synchronized WalletBitcoinManager getInstance(Context context) {
+        Log.d(TAG, "WalletBitcoinManager getInstance");
         if (mInstance == null) {
             byte[] rawPubKey = BRKeyStore.getMasterPublicKey(context);
             if (Utils.isNullOrEmpty(rawPubKey)) {

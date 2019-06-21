@@ -159,6 +159,7 @@ public class PinLayout extends LinearLayout implements BRKeyboard.OnInsertListen
                 public void run() {
                     String pin = mPinStringBuilder.toString();
                     String currentPin = BRKeyStore.getPinCode(getContext());
+                    Log.d("chendy","PinLayout "+pin+" /"+currentPin);
                     if (pin.equals(currentPin)) {
                         mOnPinInsertedListener.onPinInserted(pin, true);
                         useNewDigitLimit(true);
@@ -191,6 +192,7 @@ public class PinLayout extends LinearLayout implements BRKeyboard.OnInsertListen
     }
 
     private void handleDigitClick(Integer digit) {
+        Log.d("chendy","handleDigitClick "+digit);
         if (mPinStringBuilder.length() < mPinLimit) {
             mPinStringBuilder.append(digit);
         }
@@ -198,6 +200,7 @@ public class PinLayout extends LinearLayout implements BRKeyboard.OnInsertListen
     }
 
     private void handleDeleteClick() {
+        Log.d("chendy","handleDeleteClick ");
         if (mPinStringBuilder.length() > 0) {
             mPinStringBuilder.deleteCharAt(mPinStringBuilder.length() - 1);
         }
@@ -223,7 +226,7 @@ public class PinLayout extends LinearLayout implements BRKeyboard.OnInsertListen
             Log.e(TAG, "onInsert: key is null! ");
             return;
         }
-
+        Log.d("chendy","onKeyInsert ");
         if (key.isEmpty()) {
             handleDeleteClick();
         } else if (Character.isDigit(key.charAt(0))) {
@@ -238,6 +241,7 @@ public class PinLayout extends LinearLayout implements BRKeyboard.OnInsertListen
     }
 
     public void authFailed(final Context app, String pin) {
+        Log.d("chendy","authFailed "+pin+" /"+mLastInsertedPin);
         if (!pin.equals(mLastInsertedPin)) {
             int failCount = BRKeyStore.getFailCount(app);
             BRKeyStore.putFailCount(failCount + 1, app);
@@ -250,6 +254,7 @@ public class PinLayout extends LinearLayout implements BRKeyboard.OnInsertListen
 
     //when pin auth success
     public void authSuccess(final Context app) {
+        Log.d("chendy","authSuccess ");
         //put the new total limit
         BaseWalletManager walletManager = WalletsMaster.getInstance().getCurrentWallet(app);
         if (walletManager != null) {

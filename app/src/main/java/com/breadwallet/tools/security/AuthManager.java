@@ -13,12 +13,10 @@ import android.util.Log;
 import com.breadwallet.BreadApp;
 import com.breadwallet.R;
 import com.breadwallet.presenter.activities.DisabledActivity;
-import com.breadwallet.presenter.customviews.BRDialogView;
 import com.breadwallet.presenter.customviews.PinLayout;
 import com.breadwallet.presenter.fragments.FragmentFingerprint;
 import com.breadwallet.presenter.fragments.PinFragment;
 import com.breadwallet.presenter.interfaces.BRAuthCompletion;
-import com.breadwallet.tools.animation.BRDialog;
 import com.breadwallet.tools.animation.UiUtils;
 import com.breadwallet.tools.manager.BRSharedPrefs;
 import com.breadwallet.tools.util.Utils;
@@ -113,6 +111,7 @@ public class AuthManager {
         }
 
         final Activity app = (Activity) context;
+        Log.d("chendy","authPrompt "+useFingerPrint+" title:"+title+" message:"+message);
         if (useFingerPrint) {
             FragmentFingerprint fingerprintFragment = new FragmentFingerprint();
             Bundle args = new Bundle();

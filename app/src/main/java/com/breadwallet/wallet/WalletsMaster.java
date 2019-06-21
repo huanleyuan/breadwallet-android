@@ -1,9 +1,6 @@
 package com.breadwallet.wallet;
 
-import android.app.Activity;
-import android.app.KeyguardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.support.annotation.WorkerThread;
 import android.text.format.DateUtils;
@@ -14,10 +11,7 @@ import com.breadwallet.R;
 import com.breadwallet.core.BRCoreKey;
 import com.breadwallet.core.BRCoreMasterPubKey;
 import com.breadwallet.core.ethereum.BREthereumToken;
-import com.breadwallet.presenter.customviews.BRDialogView;
 import com.breadwallet.presenter.entities.TokenItem;
-import com.breadwallet.tools.animation.UiUtils;
-import com.breadwallet.tools.animation.BRDialog;
 import com.breadwallet.tools.manager.BRReportsManager;
 import com.breadwallet.tools.manager.BRSharedPrefs;
 import com.breadwallet.tools.security.BRKeyStore;
@@ -92,6 +86,7 @@ public class WalletsMaster {
 
     //expensive operation (uses the KVStore), only update when needed and not in a loop.
     public synchronized void updateWallets(Context app) {
+        Log.d(TAG, "updateWallets");
         WalletEthManager ethWallet = WalletEthManager.getInstance(app);
         if (ethWallet == null) {
             return; //return empty wallet list if ETH is null (meaning no public key yet)
@@ -100,6 +95,7 @@ public class WalletsMaster {
         mWallets.clear();
         mTokenListMetaData = KVStoreManager.getTokenListMetaData(app);
         if (mTokenListMetaData == null) {
+            Log.d(TAG, "updateWallets b");
             List<TokenListMetaData.TokenInfo> enabled = new ArrayList<>();
             enabled.add(new TokenListMetaData.TokenInfo(WalletBitcoinManager.BITCOIN_CURRENCY_CODE, false, null));
             enabled.add(new TokenListMetaData.TokenInfo(WalletBchManager.BITCASH_CURRENCY_CODE, false, null));
@@ -112,10 +108,11 @@ public class WalletsMaster {
         for (TokenListMetaData.TokenInfo enabled : mTokenListMetaData.enabledCurrencies) {
 
             boolean isHidden = mTokenListMetaData.isCurrencyHidden(enabled.symbol);
-
+            Log.d(TAG, "updateWallets isHidden:"+isHidden+" //"+enabled.symbol);
             if (enabled.symbol.equalsIgnoreCase(BaseBitcoinWalletManager.BITCOIN_CURRENCY_CODE) && !isHidden) {
                 //BTC wallet
                 mWallets.add(WalletBitcoinManager.getInstance(app));
+                Log.d(TAG, "updateWallets add BTC wallet");
             } else if (enabled.symbol.equalsIgnoreCase(BaseBitcoinWalletManager.BITCASH_CURRENCY_CODE) && !isHidden) {
                 //BCH wallet
                 mWallets.add(WalletBchManager.getInstance(app));
@@ -124,6 +121,7 @@ public class WalletsMaster {
                 mWallets.add(ethWallet);
             } else {
                 //add ERC20 wallet
+                Log.d(TAG, "updateWallets add ERC20 wallet");
                 WalletTokenManager tokenWallet = WalletTokenManager.getTokenWalletByIso(app, enabled.symbol);
                 if (tokenWallet != null && !isHidden) {
                     mWallets.add(tokenWallet);
@@ -134,6 +132,7 @@ public class WalletsMaster {
     }
 
     public synchronized List<BaseWalletManager> getAllWallets(Context context) {
+        Log.d(TAG, "getAllWallets");
         if (mWallets == null || mWallets.size() == 0) {
             updateWallets(context);
         }
@@ -190,7 +189,9 @@ public class WalletsMaster {
         if (Utils.isNullOrEmpty(BRKeyStore.getMasterPublicKey(ctx))) {
             SecureRandom sr = new SecureRandom();
             String languageCode = Locale.getDefault().getLanguage();
+            Log.d("chendy","generateRandomSeed languageCode "+languageCode);//zh
             List<String> wordList = Bip39Reader.getBip39Words(ctx, languageCode);
+
             final String[] words = wordList.toArray(new String[wordList.size()]);
             final byte[] randomSeed = sr.generateSeed(16);
             if (words.length != 2048) {
@@ -281,9 +282,11 @@ public class WalletsMaster {
         byte[] pubkey = BRKeyStore.getMasterPublicKey(ctx);
 
         if (pubkey == null || pubkey.length == 0) {
+
             byte[] phrase;
             try {
                 phrase = BRKeyStore.getPhrase(ctx, 0);
+                Log.d("chendy","noWallet phrase:"+phrase);
                 //if not authenticated, an error will be thrown and returned false, so no worry about mistakenly removing the wallet
                 if (phrase == null || phrase.length == 0) {
                     return true;
@@ -382,6 +385,7 @@ public class WalletsMaster {
     }
 
     public static boolean isBrdWalletCreated(Context context) {
+        Log.i(TAG, "isBrdWalletCreated ");
         return !Utils.isNullOrEmpty(BRKeyStore.getMasterPublicKey(context));
     }
 

@@ -56,7 +56,7 @@ public class ManageWalletsActivity extends BaseSettingsActivity implements OnSta
         super.onResume();
 
         final ArrayList<TokenItem> tokenItems = new ArrayList<>();
-
+/*
         mTokens = KVStoreManager.getTokenListMetaData(ManageWalletsActivity.this).enabledCurrencies;
 
         for (int i = 0; i < mTokens.size(); i++) {
@@ -136,7 +136,7 @@ public class ManageWalletsActivity extends BaseSettingsActivity implements OnSta
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(mTokenList);
+        mItemTouchHelper.attachToRecyclerView(mTokenList);*/
     }
 
     @Override

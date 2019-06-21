@@ -95,6 +95,7 @@ public class SpringAnimator {
 
     public static void failShakeAnimation(Context context, View view) {
         if (view == null) return;
+        Log.d(TAG,"failShakeAnimation ");
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
         view.setVisibility(View.VISIBLE);
         view.startAnimation(shake);

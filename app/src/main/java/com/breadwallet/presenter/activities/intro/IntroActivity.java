@@ -55,6 +55,7 @@ public class IntroActivity extends BRActivity {
 
         setContentView(R.layout.activity_intro);
         setOnClickListeners();
+        Log.d(TAG,"onCreate");
         updateBundles();
         ImageButton faq = findViewById(R.id.faq_button);
         faq.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +73,7 @@ public class IntroActivity extends BRActivity {
 
         // TODO: Remove this check once the this activity is not called from the launcher. See DROID-1134.
         if (!WalletsMaster.getInstance().noWallet(this)) {
+            Log.d(TAG,"noWallet 没有钱包 跳到LoginActivity页面");
                 UiUtils.startBreadActivity(this, true);
         }
     }

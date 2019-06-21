@@ -44,6 +44,7 @@ public class SmartValidator {
     private static final String TAG = SmartValidator.class.getName();
 
     public static boolean isPaperKeyValid(Context ctx, String paperKey) {
+        Log.d("chendy","isPaperKeyValid ");
         if (!isValid(ctx, paperKey, Locale.getDefault().getLanguage())) {
             //try all languages
             for (Bip39Reader.SupportedLanguage supportedLanguage : Bip39Reader.SupportedLanguage.values()) {
@@ -59,6 +60,7 @@ public class SmartValidator {
     }
 
     private static boolean isValid(Context ctx, String paperKey, String language) {
+        Log.d("chendy","isValid  "+paperKey+" language:"+language);
         List<String> list = Bip39Reader.getBip39Words(ctx, language);
         String[] words = list.toArray(new String[list.size()]);
         Log.e(TAG, "isValid: " + words.length);
@@ -95,6 +97,7 @@ public class SmartValidator {
     public static boolean isWordValid(Context ctx, String word) {
         List<String> wordList = Bip39Reader.getBip39Words(ctx, null);
         String cleanWord = Bip39Reader.cleanWord(word);
+        Log.d("chendy","isWordValid cleanWord "+cleanWord);
         return wordList.contains(cleanWord);
 
     }
