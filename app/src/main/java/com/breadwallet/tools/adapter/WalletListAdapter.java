@@ -159,6 +159,7 @@ public class WalletListAdapter extends RecyclerView.Adapter<WalletListAdapter.Wa
             String fiatBalance = CurrencyUtils.getFormattedAmount(mContext, BRSharedPrefs.getPreferredFiatIso(mContext), bigFiatBalance);
             String cryptoBalance = CurrencyUtils.getFormattedAmount(mContext, wallet.getCurrencyCode(), wallet.getCryptoBalance());
 
+            Log.d("chendy","name:"+name+" currencyCode:"+currencyCode+" exchangeRate:"+exchangeRate+" fiatBalance:"+fiatBalance+" cryptoBalance:"+cryptoBalance);
             if (Utils.isNullOrZero(bigExchangeRate)) {
                 decoratedHolderView.mWalletBalanceFiat.setVisibility(View.INVISIBLE);
                 decoratedHolderView.mTradePrice.setVisibility(View.INVISIBLE);

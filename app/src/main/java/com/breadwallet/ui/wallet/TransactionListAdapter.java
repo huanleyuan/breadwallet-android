@@ -30,6 +30,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,6 +192,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         String sendingTo = String.format(mContext.getString(R.string.Transaction_sendingTo), wm.decorateAddress(item.getTo()));
         String receivingVia = String.format(mContext.getString(R.string.TransactionDetails_receivingVia), wm.decorateAddress(item.getTo()));
 
+        Log.d("chendy","sentTo:"+sentTo+" receivedVia:"+receivedVia+" sendingTo:"+sendingTo+" receivingVia:"+receivingVia);
         if (level > FOUR_CONFIRMATIONS) {
             convertView.getTransactionDetail().setText(!commentString.isEmpty() ? commentString : (!received ? sentTo : receivedVia));
         } else {

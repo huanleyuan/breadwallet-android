@@ -171,7 +171,11 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
 
         // Get ViewModel, observe updates to Wallet and aggregated balance data
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mViewModel.getWallets().observe(this, wallets -> mAdapter.setWallets(wallets));
+        mViewModel.getWallets().observe(this, wallets -> {
+            Log.d(TAG,"observe ...");
+            mAdapter.setWallets(wallets);
+                }
+        );
 
         mViewModel.getAggregatedFiatBalance().observe(this, aggregatedFiatBalance -> {
             if (aggregatedFiatBalance == null) {
@@ -219,6 +223,7 @@ public class HomeActivity extends BRActivity implements InternetManager.Connecti
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume");
         showNextPromptIfNeeded();
         InternetManager.registerConnectionReceiver(this, this);
         onConnectionChanged(InternetManager.getInstance().isConnected(this));

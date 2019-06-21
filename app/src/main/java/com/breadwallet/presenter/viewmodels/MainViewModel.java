@@ -78,7 +78,7 @@ public class MainViewModel extends AndroidViewModel {
      */
     public MainViewModel(final Application app) {
         super(app);
-
+        Log.d(TAG,"construct ");
         mWallets = new MutableLiveData<>();
         mAggregatedFiatBalance = new MutableLiveData<>();
 
@@ -126,6 +126,7 @@ public class MainViewModel extends AndroidViewModel {
      * Refresh the list of wallets.
      */
     public void refreshWallets() {
+        Log.i(TAG, "refreshWallets");
         initializeWalletsAndManagers();
         refreshBalances();
     }
@@ -145,6 +146,7 @@ public class MainViewModel extends AndroidViewModel {
      * Retrieves and initializes the list of wallets.
      */
     private void initializeWalletsAndManagers() {
+        Log.d(TAG,"initializeWalletsAndManagers");
         // Retrieve the wallets
         List<BaseWalletManager> walletManagerList =
                 WalletsMaster.getInstance().getAllWallets(getApplication());
@@ -190,6 +192,7 @@ public class MainViewModel extends AndroidViewModel {
     private void updateWallets() {
         List<Wallet> wallets = mWallets.getValue();
 
+        Log.d(TAG,"updateWallets");
         if (wallets == null) {
             return;
         }
@@ -262,6 +265,7 @@ public class MainViewModel extends AndroidViewModel {
      * @param wallets The list of wallet data.
      */
     private void setWalletsLiveData(List<Wallet> wallets) {
+        Log.d(TAG,"setWalletsLiveData");
         if (UiUtils.isMainThread()) {
             mWallets.setValue(wallets);
         } else {
@@ -275,6 +279,7 @@ public class MainViewModel extends AndroidViewModel {
      * @param aggregatedFiatBalance The aggregated fiat balance.
      */
     private void setAggregatedFiatBalanceLiveData(BigDecimal aggregatedFiatBalance) {
+        Log.d(TAG,"setAggregatedFiatBalanceLiveData");
         if (UiUtils.isMainThread()) {
             mAggregatedFiatBalance.setValue(aggregatedFiatBalance);
         } else {
@@ -286,6 +291,7 @@ public class MainViewModel extends AndroidViewModel {
      * Determines the next wallet to sync, and if found, initiates the sync (all in a background thread).
      */
     private void startNextWalletSync() {
+        Log.d(TAG,"startNextWalletSync");
         BRExecutor.getInstance().forLightWeightBackgroundTasks().execute(new Runnable() {
             @Override
             public void run() {
@@ -343,6 +349,7 @@ public class MainViewModel extends AndroidViewModel {
     private class SyncNotificationBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG,"onReceive");
             if (SyncService.ACTION_SYNC_PROGRESS_UPDATE.equals(intent.getAction())) {
                 String intentCurrencyCode = intent.getStringExtra(SyncService.EXTRA_WALLET_CURRENCY_CODE);
                 double progress = intent.getDoubleExtra(SyncService.EXTRA_PROGRESS, SyncService.PROGRESS_NOT_DEFINED);
@@ -376,6 +383,7 @@ public class MainViewModel extends AndroidViewModel {
 
         @Override
         public void onBalancesChanged(Map<String, BigDecimal> balanceMap) {
+            Log.d(TAG,"onBalancesChanged");
             List<Wallet> wallets = mWallets.getValue();
             if (wallets == null) {
                 return;
@@ -428,6 +436,7 @@ public class MainViewModel extends AndroidViewModel {
          */
         @Override
         public void onConnectionChanged(boolean isConnected) {
+            Log.d(TAG,"onConnectionChanged "+isConnected);
             if (isConnected) {
                 startNextWalletSync();
             }
