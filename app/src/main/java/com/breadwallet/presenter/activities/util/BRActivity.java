@@ -124,7 +124,7 @@ public class BRActivity extends FragmentActivity {
     @Override
         protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         // 123 is the qrCode result
-        Log.i(TAG, "onActivityResult");
+        Log.i("chendy", "onActivityResult "+requestCode);
         switch (requestCode) {
             case BRConstants.PAY_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
@@ -182,6 +182,7 @@ public class BRActivity extends FragmentActivity {
                 break;
 
             case BRConstants.PUT_PHRASE_NEW_WALLET_REQUEST_CODE:
+                Log.i("chendy", "onActivityResult xxxxxxxxxxxxxxxx "+resultCode);
                 if (resultCode == RESULT_OK) {
                     BRExecutor.getInstance().forLightWeightBackgroundTasks().execute(new Runnable() {
                         @Override

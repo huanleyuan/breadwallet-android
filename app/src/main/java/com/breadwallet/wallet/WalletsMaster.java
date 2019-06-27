@@ -35,6 +35,7 @@ import com.platform.tools.KVStoreManager;
 import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -206,12 +207,19 @@ public class WalletsMaster {
                 return false;
             }
             String[] splitPhrase = new String(paperKeyBytes).split(" ");
+           // Log.d("chendy","generateRandomSeed 助记词得到种子 "+splitPhrase);
+
+
             if (splitPhrase.length != 12) {
                 BRReportsManager.reportBug(new NullPointerException("phrase does not have 12 words:" + splitPhrase.length + ", lang: " + languageCode), true);
                 return false;
             }
             boolean success = false;
             try {
+                Log.d("chendy", "助记词 "+ Arrays.toString(splitPhrase).replace(",",""));//zh
+                for (int i = 0; i < paperKeyBytes.length; i++) {//这儿是字节
+                     Log.d("chendy", "保存字节 paperKeyBytes " + paperKeyBytes[i]);//zh
+                }
                 success = BRKeyStore.putPhrase(paperKeyBytes, ctx, BRConstants.PUT_PHRASE_NEW_WALLET_REQUEST_CODE);
             } catch (UserNotAuthenticatedException e) {
                 return false; // While this is wrong (never ignore a UNAE), it seems to not be causing issues at the moment.
@@ -220,27 +228,38 @@ public class WalletsMaster {
             byte[] phrase;
             try {
                 phrase = BRKeyStore.getPhrase(ctx, 0);
+                for (int i = 0; i < paperKeyBytes.length; i++) {//这儿是字节
+                    Log.d("chendy", "get字节 phrase byte " + phrase[i]);//zh
+                }
             } catch (UserNotAuthenticatedException e) {
                 throw new RuntimeException("Failed to retrieve the phrase even though at this point the system auth was asked for sure.");
             }
             if (Utils.isNullOrEmpty(phrase)) throw new NullPointerException("phrase is null!!");
             if (phrase.length == 0) throw new RuntimeException("phrase is empty");
             byte[] seed = BRCoreKey.getSeedFromPhrase(phrase);
+            Log.d("chendy","generateRandomSeed 助记词byte得到种子 "+phrase+" seed:"+seed);
             if (seed == null || seed.length == 0) throw new RuntimeException("seed is null");
             byte[] authKey = BRCoreKey.getAuthPrivKeyForAPI(seed);
             if (authKey == null || authKey.length == 0) {
                 BRReportsManager.reportBug(new IllegalArgumentException("authKey is invalid"), true);
             }
+            for (int i = 0; i < authKey.length; i++) {//这儿是字节
+                Log.d("chendy", "get字节 authKey byte " + authKey[i]);//zh
+            }
             BRKeyStore.putAuthKey(authKey, ctx);
             int walletCreationTime = (int) (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS);
+            Log.d("chendy","generateRandomSeed 时间 ");
             BRKeyStore.putWalletCreationTime(walletCreationTime, ctx);
             final WalletInfoData info = new WalletInfoData();
             info.creationDate = walletCreationTime;
+            Log.d("chendy","generateRandomSeed 钱包信息 ");
             KVStoreManager.putWalletInfo(ctx, info); //push the creation time to the kv store
 
             //store the serialized in the KeyStore
             byte[] pubKey = new BRCoreMasterPubKey(paperKeyBytes, true).serialize();
+            Log.d("chendy","generateRandomSeed 私钥--》公钥 ");
             BRKeyStore.putMasterPublicKey(pubKey, ctx);
+            Log.d("chendy","generateRandomSeed end ");
         }
 
         return true;

@@ -218,6 +218,7 @@ public class OnBoardingActivity extends BRActivity {
         PostAuth.getInstance().onCreateWalletAuth(activity, false, new PostAuth.AuthenticationSuccessListener() {
             @Override
             public void onAuthenticatedSuccess() {
+                Log.d(TAG,"onAuthenticatedSuccess ");
                 APIClient.getInstance(activity).updatePlatform(activity);
                 Intent intent = new Intent(activity, InputPinActivity.class);
                 activity.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);

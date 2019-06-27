@@ -307,12 +307,13 @@ public final class BRKeyStore {
             if (iv == null) {
                 throw new NullPointerException("iv is null!");
             }
-            Log.d("chendy","setData ");
+            Log.d("chendy","setData aaaaaaaaaa "+aliasIv);
             // Store the iv in SharedPreferences to use for decryption.
             storeEncryptedData(context, iv, aliasIv);
             // Encrypt data.
             byte[] encryptedData = inCipher.doFinal(data);
             // Store the encrypted data in SharedPreferences.
+            Log.d("chendy","setData bbbbbbbbbbbb "+alias);
             storeEncryptedData(context, encryptedData, alias);
             return true;
         } catch (UserNotAuthenticatedException e) {
@@ -884,7 +885,7 @@ public final class BRKeyStore {
         String base64 = Base64.encodeToString(data, Base64.DEFAULT);
         SharedPreferences.Editor edit = pref.edit();
         edit.putString(name, base64);
-        Log.d("chendy","storeEncryptedData 保存加密信息 "+name+" base64:"+base64);
+        Log.d("chendy","storeEncryptedData 保存加密信息 "+name+" byte变base64:"+base64);
         edit.apply();
     }
 

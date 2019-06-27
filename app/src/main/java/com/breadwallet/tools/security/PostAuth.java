@@ -99,6 +99,7 @@ public class PostAuth {
         if (listener != null) {
             mAuthenticationSuccessListener = listener;
         }
+        Log.d(TAG,"onCreateWalletAuth ");
         boolean success = WalletsMaster.getInstance().generateRandomSeed(context);
         if (success) {
             BreadApp.initialize(false);
